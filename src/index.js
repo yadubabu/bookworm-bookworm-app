@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import {BrowserRouter,Route} from 'react-router-dom';
 import App from './App';
+import decode from 'jwt-decode';
 import reportWebVitals from './reportWebVitals';
 import {createStore,applyMiddleware} from 'redux';
 import {Provider} from 'react-redux';
@@ -14,7 +15,12 @@ const store=createStore(rootReducer,composeWithDevTools(applyMiddleware(thunk))
 );
 
 if(localStorage.bookwormJWT){
-  const user={token:localStorage.bookwormJWT};
+  const payload=decode(localStorage.bookwormJWT);
+  const user={
+    token:localStorage.bookwormJWT,
+    email:payload.email,
+    confirmed:payload.confirmed
+  };
   store.dispatch(userLoggedIn(user));
 }
 
